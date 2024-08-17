@@ -61,9 +61,23 @@ async function run() {
             if (max) {
                 query.price = { $lte: max }
             }
+            
+            if (date) {
+                options.sort = {
+                    "createdAt": 1
+                }
+            }
+            else if (price && price === 'low') {
+                options.sort = {
+                    "price": 1
+                }
+            }
+            else if (price && price === 'high') {
+                options.sort = {
+                    "price": -1
+                }
+            }
 
-
-           
 
             const result = await productCollection.find(query, options).skip(page * size).limit(size).toArray();
             res.send(result)
