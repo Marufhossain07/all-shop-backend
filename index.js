@@ -58,6 +58,12 @@ async function run() {
                 query.category = category
             }
             
+            if (max) {
+                query.price = { $lte: max }
+            }
+
+
+           
 
             const result = await productCollection.find(query, options).skip(page * size).limit(size).toArray();
             res.send(result)
