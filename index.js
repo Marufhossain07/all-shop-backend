@@ -36,9 +36,53 @@ async function run() {
         const productCollection = client.db('allshopDB').collection('products');
 
         app.get('/products', async (req, res) => {
-            const result = await productCollection.find().toArray();
+            const page = parseInt(req.query.page) - 1
+            const size = parseInt(req.query.size)
+            const search = req.query.search;
+            const date = req.query.date;
+            const max = parseFloat(req.query.max)
+            const price = req.query.price;
+            const brand = req.query.brand;
+            const category = req.query.category;
+            const query = {}
+            const options = {}
+            
+            if (search) {
+                query.name = { $regex: search, $options: 'i' }
+            }
+            if (brand) {
+                query.brand = brand
+            }
+            if (category) {
+                query.category = category
+            }
+            if(max){
+                query.price = { $lte: max}
+            }
 
+
+            if (date) {
+                options.sort = {
+                    "createdAt": 1
+                }
+            }
+            else if (price && price === 'low') {
+                options.sort = {
+                    "price": 1
+                }
+            }
+            else if (price && price === 'high') {
+                options.sort = {
+                    "price": -1
+                }
+            }
+            const result = await productCollection.find(query, options).skip(page * size).limit(size).toArray();
             res.send(result)
+        })
+
+        app.get('/products-count', async (req, res) => {
+            const result = await productCollection.countDocuments()
+            res.send({ result })
         })
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
