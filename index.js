@@ -46,15 +46,19 @@ async function run() {
             const category = req.query.category;
             const query = {}
             const options = {}
-            
+
             if (search) {
                 query.name = { $regex: search, $options: 'i' }
             }
             if (brand) {
                 query.brand = brand
             }
+
+            if (category) {
+                query.category = category
+            }
             
-            
+
             const result = await productCollection.find(query, options).skip(page * size).limit(size).toArray();
             res.send(result)
         })
