@@ -10,8 +10,8 @@ app.use(
     cors({
         origin: [
             "http://localhost:5173",
-            "https://all-shop-1760b.web.app/",
-            "https://all-shop-1760b.firebaseapp.com/"
+            "https://all-shop-1760b.web.app",
+            "https://all-shop-1760b.firebaseapp.com"
         ]
     })
 );
